@@ -8,6 +8,7 @@ export interface Question {
   number: string;
   text: string;
   order: number;
+  page:number
 }
 
 export interface AnswerRegion {

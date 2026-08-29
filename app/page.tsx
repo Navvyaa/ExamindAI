@@ -1,74 +1,53 @@
 "use client";
 
-import { useState } from "react";
-import UploadCard from "@/components/upload/UploadCard";
-import { UploadedFile } from "@/types/assessment";
+import UploadCard from "@/components/UploadCard";
+import Navbar from "@/components/Navbar";
+import { useAssessmentStore } from "@/store/assessmentStore";
+import { fileToBase64, pdfToImages } from "@/lib/pdf-to-img";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
+import UploadScreen from "@/components/screens/UploadScreen";
+import ExtractionScreen from "@/components/screens/ExtractionScreen";
+import QuestionList from "@/components/review/QuestionList";
+import ReviewScreen from "@/components/screens/ReviewScreen";
+
 
 export default function Home() {
-  const [questionPaper, setQuestionPaper] =
-    useState<UploadedFile | null>(null);
 
-  const [answerSheet, setAnswerSheet] =
-    useState<UploadedFile | null>(null);
+  const {processingStep} = useAssessmentStore();
 
-  const canStart = questionPaper && answerSheet;
 
-  const handleStart = () => {
-    if (!canStart) return;
+   const renderScreen = () => {
+    switch (processingStep) {
+      case "idle":
+        return <UploadScreen />;
 
-    console.log("Question paper:", questionPaper.file);
-    console.log("Answer sheet:", answerSheet.file);
+      case "extracting-questions":
+      case "extracting-answers":
+      case "mapping-answers":
+        case "grading":
+          return <ExtractionScreen />;
+          
+          // case "error":
+          // return <Error />;
+      case "mapping-answers":
+      case "complete":
+        return <ReviewScreen/>
 
-    // We'll connect this to our extraction pipeline next.
+      default:
+        return <UploadScreen />;
+    }
   };
+  
+return (
+  <main className="h-screen flex flex-col text-black px-6 py-4 bg-[linear-gradient(180deg,_#F5F5F5_0%,_#E9E5E5_100%)]">
+    <div className="mx-auto max-w-5xl w-full flex-1 min-h-0 flex flex-col">
+      <Navbar />
 
-  return (
-    <main className="min-h-screen bg-[#f8f8f8] px-6 py-12">
-      <div className="mx-auto max-w-5xl">
-        {/* Header */}
-        <header className="mb-10">
-          <p className="mb-2 text-sm font-medium text-gray-500">
-            AI Assessment
-          </p>
-
-          <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
-            Assess handwritten answers
-          </h1>
-
-          <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500">
-            Upload a question paper and a student answer sheet
-            to extract, map and assess answers automatically.
-          </p>
-        </header>
-
-        {/* Upload cards */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <UploadCard
-            title="Question paper"
-            description="Upload the question paper containing the questions."
-            value={questionPaper}
-            onChange={setQuestionPaper}
-          />
-
-          <UploadCard
-            title="Student answer sheet"
-            description="Upload the student's handwritten answer sheet."
-            value={answerSheet}
-            onChange={setAnswerSheet}
-          />
-        </div>
-
-        {/* Action */}
-        <div className="mt-8 flex justify-end">
-          <button
-            onClick={handleStart}
-            disabled={!canStart}
-            className="rounded-lg bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300"
-          >
-            Start assessment
-          </button>
-        </div>
+      <div className="flex-1 min-h-0 mt-6">
+        {renderScreen()}
       </div>
-    </main>
-  );
+    </div>
+  </main>
+);
 }

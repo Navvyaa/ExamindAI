@@ -1,5 +1,5 @@
 import React from 'react'
-import { ArrowLeft, Clipboard, HelpCircle, Bell, ChevronDown, SparkleIcon } from 'lucide-react'
+import { ArrowLeft, Clipboard, HelpCircle, Bell, ChevronDown, SparkleIcon, MenuIcon } from 'lucide-react'
 import { useAssessmentStore } from '@/store/assessmentStore'
 
 export default function Navbar() {
@@ -35,7 +35,15 @@ export default function Navbar() {
             <div className='md:hidden flex items-center justify-between'>
                 <div className='flex items-center gap-3'>
                     <ArrowLeft size={20}/>
-                    <p className=''>VedaAI</p>
+                    <p className='font-bold'>VedaAI</p>
+                </div>
+                <div className='flex items-center gap-2 font-bold'>
+                    <div className='relative '>
+                        <Bell size={22} />
+                        <div className='w-1.5 h-1.5 rounded-full bg-red-500 absolute top-0 right-0' />
+                    </div>
+                    <div className='w-7 h-7 rounded-full bg-neutral-400'/>
+                    <MenuIcon size={22} />
                 </div>
 
             </div>

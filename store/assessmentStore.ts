@@ -58,7 +58,7 @@ export const useAssessmentStore =
 
     selectedQuestionId: null,
 
-    processingStep: "idle",
+    processingStep: "error",
     answerSheetPages: [],
     error: null,
 

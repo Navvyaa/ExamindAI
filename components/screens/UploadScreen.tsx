@@ -104,6 +104,6 @@ export default function Uploadscreen() {
                     <p>Start Mapping</p> <ArrowRight size={18} />
                 </button>
             </div>
-            <p className="text-center mt-2 text-xs text-gray-400">Once both files are uploaded you'll be able to map the answers with questions</p></div>
+            <p className="text-center my-2 text-xs text-gray-400">Once both files are uploaded you'll be able to map the answers with questions</p></div>
     )
 }

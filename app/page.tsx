@@ -10,6 +10,7 @@ import UploadScreen from "@/components/screens/UploadScreen";
 import ExtractionScreen from "@/components/screens/ExtractionScreen";
 import QuestionList from "@/components/review/QuestionList";
 import ReviewScreen from "@/components/screens/ReviewScreen";
+import ErrorScreen from "@/components/screens/ErrorScreen";
 import SidePanel from "@/components/SidePanel";
 
 
@@ -29,8 +30,8 @@ export default function Home() {
         case "grading":
           return <ExtractionScreen />;
           
-          // case "error":
-          // return <Error />;
+          case "error":
+          return <ErrorScreen />;
       case "mapping-answers":
       case "complete":
         return <ReviewScreen/>
@@ -41,7 +42,7 @@ export default function Home() {
   };
   
 return (
-  <main className="h-dvh flex gap-6 text-black px-6 py-4 bg-[linear-gradient(180deg,_#F5F5F5_0%,_#E9E5E5_100%)]">
+  <main className="h-dvh max-h-full flex gap-6 text-black px-6 py-4 bg-[linear-gradient(180deg,_#F5F5F5_0%,_#E9E5E5_100%)]">
       <div className="hidden md:block">
       <SidePanel/>
       </div>

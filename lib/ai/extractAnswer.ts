@@ -1,4 +1,4 @@
-import { model } from "../gemini";
+import { model } from "./gemini";
 
 export interface ExtractedAnswer {
   id: string;

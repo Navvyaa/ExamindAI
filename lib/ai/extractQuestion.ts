@@ -1,4 +1,4 @@
-import { model } from "../gemini";
+import { model } from "./gemini";
 
 export async function extractQuestions(file: File) {
   const buffer = await file.arrayBuffer();

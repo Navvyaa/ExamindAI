@@ -80,7 +80,7 @@ export default function UploadCard({
         }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
-        className={`flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-xl border-3 border-dashed transition ${isDragging
+        className={`flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-xl border-3 border-dashed transition ${isDragging
             ? "border-black bg-gray-50"
             : "border-gray-300 hover:border-gray-500"
           }`}

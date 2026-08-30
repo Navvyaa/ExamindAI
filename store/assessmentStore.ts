@@ -40,6 +40,10 @@ interface AssessmentStore {
   setProcessingStep: (step: ProcessingStep) => void;
   setError: (error: string | null) => void;
 
+  answerSheetPages: string[];
+
+  setAnswerSheetPages: (pages: string[]) => void;
+
   resetAssessment: () => void;
 }
 
@@ -55,6 +59,7 @@ export const useAssessmentStore =
     selectedQuestionId: null,
 
     processingStep: "idle",
+    answerSheetPages: [],
     error: null,
 
     setQuestionPaper: (file) =>
@@ -92,6 +97,11 @@ export const useAssessmentStore =
         processingStep: step,
       }),
 
+    setAnswerSheetPages: (pages) =>
+      set({
+        answerSheetPages: pages,
+      }),
+
     setError: (error) =>
       set({
         error,
@@ -106,6 +116,7 @@ export const useAssessmentStore =
         results: [],
         selectedQuestionId: null,
         processingStep: "idle",
+        answerSheetPages:[],
         error: null,
       }),
   }));

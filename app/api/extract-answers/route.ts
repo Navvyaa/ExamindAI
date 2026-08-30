@@ -21,8 +21,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const answers =
-      await extractAnswers(pageImages);
+    const answers=await extractAnswers(pageImages);
 
     return NextResponse.json({
       success: true,

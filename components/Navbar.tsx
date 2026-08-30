@@ -1,12 +1,16 @@
 import React from 'react'
 import { ArrowLeft, Clipboard, HelpCircle, Bell, ChevronDown, SparkleIcon } from 'lucide-react'
+import { useAssessmentStore } from '@/store/assessmentStore'
 
 export default function Navbar() {
+    const {resetAssessment}=useAssessmentStore();
     return (
-        <nav className='px-6 py-4 bg-white/95 rounded-2xl w-full lg:max-w-5xl sticky drop-shadow-sm'>
+        <nav className='px-6 py-4 bg-white/95 rounded-2xl w-full sticky drop-shadow-sm'>
             <div className='hidden md:flex items-center justify-between'>
                 <div className='flex gap-4 items-center'>
-                    <ArrowLeft size={24} className='font-bold text-black' />
+                    <div className='hover:bg-neutral-100 p-2 rounded-full'>
+                        <ArrowLeft onClick={resetAssessment} size={20} className='font-bold text-black ' />
+                    </div>
                     <div className='text-sm text-neutral-400 font-bold flex gap-2 items-center'>
                         <Clipboard size={20} />
                         <span>Exams</span>

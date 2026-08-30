@@ -42,7 +42,7 @@ export default function Home() {
   
 return (
   <main className="h-dvh flex gap-6 text-black px-6 py-4 bg-[linear-gradient(180deg,_#F5F5F5_0%,_#E9E5E5_100%)]">
-      <div className="hideen md:block">
+      <div className="hidden md:block">
       <SidePanel/>
       </div>
     <div className="w-full flex-1 min-h-0 flex flex-col">

@@ -15,7 +15,7 @@ export default function AnswerViewer({
 }: AnswerViewerProps) {
     const { answerSheetPages } = useAssessmentStore();
 
-    const [zoom, setZoom] = useState(1);
+    const [zoom, setZoom] = useState(.7);
     const [currentPage, setCurrentPage] = useState(1);
 
     const viewerRef = useRef<HTMLDivElement>(null);
@@ -35,21 +35,48 @@ export default function AnswerViewer({
      * scroll to the page containing its answer.
      */
     useEffect(() => {
-        if (!answer?.regions?.length) return;
+    if (!answer?.regions?.length) return;
 
-        const firstPage = answer.regions[0].page;
+    const firstRegion = answer.regions[0];
+    const pageElement = pageRefs.current[firstRegion.page];
+    const container = viewerRef.current;
 
-        const pageElement = pageRefs.current[firstPage];
+    if (!pageElement || !container) return;
 
-        if (!pageElement) return;
+    const containerRect = container.getBoundingClientRect();
+    const pageRect = pageElement.getBoundingClientRect();
 
-        pageElement.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-        });
+    /*
+     * Region's vertical position within the page,
+     * converted from Gemini's 0-1000 normalized scale
+     * into actual rendered pixels for this page.
+     */
+    const regionTopWithinPage =
+        (firstRegion.y / 1000) * pageRect.height;
 
-        setCurrentPage(firstPage);
-    }, [answer]);
+    /*
+     * Where the page currently sits relative to the
+     * container's scrollable content.
+     */
+    const pageOffsetInContainer =
+        pageRect.top - containerRect.top + container.scrollTop;
+
+    /*
+     * Leave some breathing room above the region instead
+     * of pinning it flush to the top of the viewer.
+     */
+    const topPadding = 80;
+
+    const targetScrollTop =
+        pageOffsetInContainer + regionTopWithinPage - topPadding;
+
+    container.scrollTo({
+        top: Math.max(targetScrollTop, 0),
+        behavior: "smooth",
+    });
+
+    setCurrentPage(firstRegion.page);
+}, [answer]);
 
     /*
      * Track the page currently closest to the top
@@ -205,7 +232,6 @@ function DocumentPage({
     regions: AnswerRegion[];
     pageRef: (element: HTMLDivElement | null) => void;
 }) {
-    const imageRef = useRef<HTMLImageElement>(null);
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -215,16 +241,14 @@ function DocumentPage({
             height: 0,
         });
 
-    const handleImageLoad = () => {
-        const img = imageRef.current;
-
-        if (!img) return;
-
+    const handleImageLoad = (
+        e: React.SyntheticEvent<HTMLImageElement>
+    ) => {
+        const img = e.currentTarget;
         setNaturalDimensions({
             width: img.naturalWidth,
             height: img.naturalHeight,
         });
-
         setImageLoaded(true);
     };
 
@@ -236,15 +260,6 @@ function DocumentPage({
     const baseWidth = 768;
     const renderedWidth = baseWidth * zoom;
 
-    /*
-     * Preserve the original image aspect ratio.
-     */
-    // const renderedHeight =
-    //     naturalDimensions.width > 0
-    //         ? (renderedWidth / naturalDimensions.width) *
-    //           naturalDimensions.height
-    //         : 0;
-
     return (
         <div
             ref={pageRef}
@@ -255,7 +270,6 @@ function DocumentPage({
             }}
         >
             <img
-                ref={imageRef}
                 src={image}
                 alt={`Answer sheet page ${pageNumber}`}
                 onLoad={handleImageLoad}

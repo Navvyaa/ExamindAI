@@ -19,7 +19,6 @@ export default function Uploadscreen() {
         setError,
         setAnswerSheetPages,
         setResults,
-        results
     } = useAssessmentStore();
     const canStart = questionPaper && answerSheet;
     const handleStart = async () => {

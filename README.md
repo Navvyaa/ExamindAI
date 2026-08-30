@@ -1,10 +1,10 @@
-# Examind AI - Assessment Analyzer
+# AssessAI - Assessment Analyzer
 
 An intelligent assessment automation platform that uses AI to extract questions and answers documents, map student responses to questions, and provide automated grading and feedback.
 
 ## Overview
 
-**Examind AI** is a web application designed to streamline the assessment process for educators. It automates the extraction and analysis of question papers and answer sheets, enabling teachers to efficiently review student responses and generate insights about assessment performance.
+**AssessAI** is a web application designed to streamline the assessment process for educators. It automates the extraction and analysis of question papers and answer sheets, enabling teachers to efficiently review student responses and generate insights about assessment performance.
 
 ## Features
 

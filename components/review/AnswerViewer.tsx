@@ -229,15 +229,9 @@ function DocumentPage({
     };
 
     /*
-     * Base width of the document.
-     *
-     * At 100%:
-     *   max width = 768px (max-w-3xl)
-     *
-     * At 200%:
-     *   max width = 1536px
-     *
-     * The actual width is allowed to grow with zoom.
+     * Base width of the document at 100% zoom.
+     * Capped so it never overflows the viewer on
+     * narrow screens, but can grow past it with zoom.
      */
     const baseWidth = 768;
     const renderedWidth = baseWidth * zoom;
@@ -245,11 +239,11 @@ function DocumentPage({
     /*
      * Preserve the original image aspect ratio.
      */
-    const renderedHeight =
-        naturalDimensions.width > 0
-            ? (renderedWidth / naturalDimensions.width) *
-              naturalDimensions.height
-            : 0;
+    // const renderedHeight =
+    //     naturalDimensions.width > 0
+    //         ? (renderedWidth / naturalDimensions.width) *
+    //           naturalDimensions.height
+    //         : 0;
 
     return (
         <div
@@ -258,9 +252,6 @@ function DocumentPage({
             className="relative shrink-0 bg-white shadow-md"
             style={{
                 width: `${renderedWidth}px`,
-                height: renderedHeight
-                    ? `${renderedHeight}px`
-                    : "auto",
             }}
         >
             <img
@@ -274,36 +265,11 @@ function DocumentPage({
             {imageLoaded &&
                 naturalDimensions.width > 0 &&
                 regions.map((region, index) => {
-                    /*
-                     * IMPORTANT:
-                     *
-                     * region.x / y / width / height are assumed
-                     * to be in the ORIGINAL image coordinate system.
-                     *
-                     * We convert those coordinates into percentages.
-                     *
-                     * Because the overlay and image share the exact
-                     * same parent dimensions, the bounding box scales
-                     * automatically when zoom changes.
-                     */
 
-                    const left =
-                        (region.x / naturalDimensions.width) *
-                        100;
-
-                    const top =
-                        (region.y / naturalDimensions.height) *
-                        100;
-
-                    const width =
-                        (region.width /
-                            naturalDimensions.width) *
-                        100;
-
-                    const height =
-                        (region.height /
-                            naturalDimensions.height) *
-                        100;
+                    const left = (region.x / 1000) * 100;
+                    const top = (region.y / 1000) * 100;
+                    const width = (region.width / 1000) * 100;
+                    const height = (region.height / 1000) * 100;
 
                     return (
                         <div

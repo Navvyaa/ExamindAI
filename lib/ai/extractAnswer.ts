@@ -76,7 +76,9 @@ Examples:
 
 9. Ignore decorative marks, page numbers, signatures and unrelated writing.
 
-10. For every answer, return the bounding region containing the handwritten answer.
+10. The bounding box for an answer MUST cover ALL handwritten lines belonging to that answer. The bounding box must start at the first handwritten
+   line of the answer and end at the last handwritten line of the answer.
+
 
 11. Coordinates must be relative to the ORIGINAL IMAGE.
 

@@ -3,7 +3,6 @@ import Image from 'next/image';
 import UploadCard from '../UploadCard';
 import { ArrowRight } from 'lucide-react';
 import { fileToBase64, pdfToImages } from '@/lib/pdf-to-img';
-import { mapAnswers } from '@/lib/ai/mapping';
 import { buildAssessmentResults } from '@/lib/assessment/buildAssessmentResult';
 
 export default function Uploadscreen() {
@@ -80,8 +79,21 @@ export default function Uploadscreen() {
 
             setProcessingStep("mapping-answers");
 
-            const mappings = await mapAnswers(questionData.questions, answerData.answers);
-            const results =buildAssessmentResults( questionData.questions, answerData.answers, mappings);
+            const mappingResponse = await fetch("/api/map-answers", {
+                method: "POST",
+                body: JSON.stringify({ questions: questionData.questions, answers: answerData.answers })
+            });
+
+            const mappingData = await mappingResponse.json();
+
+
+            if (!mappingResponse.ok) {
+                throw new Error(mappingData.error ||  "Failed to map answers");
+            }
+
+            const mappings = mappingData.mappedAnswers;
+            console.log(mappings)
+            const results = buildAssessmentResults(questionData.questions, answerData.answers, mappings);
 
             setResults(results);
             setProcessingStep("complete");
@@ -124,7 +136,7 @@ export default function Uploadscreen() {
             <div className="mt-6 flex justify-center ">
                 <button
                     onClick={handleStart}
-                    disabled={!canStart || processingStep === "extracting-questions" || processingStep === "extracting-answers" || processingStep === "grading"}
+                    disabled={!canStart}
                     className="rounded-full flex items-center gap-4 bg-black px-6 py-3 text-sm font-mono leading-relaxed text-white transition hover:bg-gray-800 drop-shadow-lg disabled:cursor-not-allowed disabled:bg-gray-300"
                 >
                     <p>Start Mapping</p> <ArrowRight size={18} />

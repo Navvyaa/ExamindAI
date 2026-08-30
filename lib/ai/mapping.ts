@@ -13,7 +13,7 @@ interface MappingResponse {
     mappings: AnswerMapping[];
 }
 
-export async function mapAnswers(
+export async function mapping(
     questions: Question[],
     answers: StudentAnswer[]
 ): Promise<AnswerMapping[]> {

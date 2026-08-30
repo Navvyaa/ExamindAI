@@ -18,7 +18,7 @@ export default function ExtractionScreen(){
    } 
   return (
     <div className='w-full h-full flex items-center justify-center bg-white rounded-xl p-6 flex-col gap-6'>
-        <Image src="/loading.svg" width={200} height={200} alt='Loading...' className='animate-pulse'/>
+        <Image src="/Loading.svg" width={200} height={200} alt='Loading...' className='animate-pulse'/>
         <p className='lg:text-3xl font-bold mt-6 '>{header()}</p>
         <p className='text-gray-400'>This may take a while.</p>
     </div>

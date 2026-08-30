@@ -4,6 +4,7 @@ import UploadCard from '../UploadCard';
 import { ArrowRight } from 'lucide-react';
 import { fileToBase64, pdfToImages } from '@/lib/pdf-to-img';
 import { buildAssessmentResults } from '@/lib/assessment/buildAssessmentResult';
+import { extractAnswersRequest, extractQuestionsRequest, gradeResultsRequest, mapAnswersRequest } from '@/lib/assessment/api';
 
 export default function Uploadscreen() {
 
@@ -16,88 +17,46 @@ export default function Uploadscreen() {
         setAnswers,
         setQuestions,
         setError,
-        processingStep,
         setAnswerSheetPages,
         setResults,
+        results
     } = useAssessmentStore();
     const canStart = questionPaper && answerSheet;
-
     const handleStart = async () => {
         if (!questionPaper || !answerSheet) return;
         try {
             setError(null);
-            setProcessingStep("extracting-questions");
-            const questionFormData = new FormData();
-            questionFormData.append("file", questionPaper);
-            const questionResponse = await fetch('/api/extract-questions/', {
-                method: "POST",
-                body: questionFormData,
-            });
-            const questionData = await questionResponse.json();
 
-            if (!questionResponse.ok) {
-                throw new Error(
-                    questionData.error ||
-                    "Failed to extract questions"
-                );
-            };
-            setQuestions(questionData.questions);
-            console.log("Questions extracted:", questionData.questions);
+            setProcessingStep("extracting-questions");
+            const questions = await extractQuestionsRequest(questionPaper);
+            setQuestions(questions);
+            console.log("Questions extracted:", questions);
 
 
             setProcessingStep("extracting-answers");
-
             let pageImages: string[];
-
             if (answerSheet.type === "application/pdf") {
                 pageImages = await pdfToImages(answerSheet);
             } else {
                 pageImages = [await fileToBase64(answerSheet)];
             }
-
             setAnswerSheetPages(pageImages);
-            const answerResponse = await fetch("/api/extract-answers",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        pageImages,
-                    }),
-                }
-            );
+            const answers = await extractAnswersRequest(pageImages);
+            setAnswers(answers);
 
-            const answerData = await answerResponse.json();
-            console.log(answerData)
-
-            if (!answerResponse.ok) {
-                throw new Error(answerData.error || "Failed to extract answers");
-            }
-
-            setAnswers(answerData.answers);
 
             setProcessingStep("mapping-answers");
-
-            const mappingResponse = await fetch("/api/map-answers", {
-                method: "POST",
-                body: JSON.stringify({ questions: questionData.questions, answers: answerData.answers })
-            });
-
-            const mappingData = await mappingResponse.json();
-
-
-            if (!mappingResponse.ok) {
-                throw new Error(mappingData.error ||  "Failed to map answers");
-            }
-
-            const mappings = mappingData.mappedAnswers;
-            console.log(mappings)
-            const results = buildAssessmentResults(questionData.questions, answerData.answers, mappings);
-
+            const mappings = await mapAnswersRequest(questions, answers);
+            console.log(mappings);
+            const results = buildAssessmentResults(questions, answers, mappings);
             setResults(results);
-            setProcessingStep("complete");
 
+            setProcessingStep("grading");
+            const gradedResults = await gradeResultsRequest(results);
+            console.log("RESULTS:", gradedResults)
+            setResults(gradedResults);
+
+            setProcessingStep("complete");
             console.log("Assessment extraction complete");
 
         } catch (error) {
@@ -105,7 +64,10 @@ export default function Uploadscreen() {
             setProcessingStep("error");
             setError(error instanceof Error ? error.message : "Something went wrong");
         }
+
     }
+
+
 
     return (
         <div><header className="my-2 w-full mx-auto">
@@ -115,8 +77,9 @@ export default function Uploadscreen() {
             <p className="text-lg font-light my-4 text-center hidden md:block">Upload both files to get started</p>
 
         </header>
-            <div className="w-full md:flex items-center justify-center my-4 hidden">
-                <Image src="/hero.svg" alt="" width={200} height={200} />
+            <div className="w-full flex items-center justify-center my-4 ">
+                <Image src="/hero.svg" alt="" width={200} height={200} className='hidden md:block'/>
+                <Image src="/hero.svg" alt="" width={100} height={140} className='md:hidden '/>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 rounded-xl bg-neutral-100 p-4 max-w-5xl mx-auto" >

@@ -1,2 +1,0 @@
-import { model } from "./gemini"
-

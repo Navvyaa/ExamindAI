@@ -100,7 +100,7 @@ export default function UploadCard({
               <FileImage className="h-10 w-10" />
             )}
             <div className="flex flex-col gap-2 text-center items-center w-full ">
-              <p className="lg:max-w-[180px] max-w-[120px] font-semibold truncate text-sm lg:text-lg  text-gray-900">
+              <p className="lg:max-w-[180px] max-w-[120px] font-semibold truncate text-xs lg:text-lg  text-gray-900">
                 {value.name}
               </p>
 

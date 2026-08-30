@@ -8,7 +8,8 @@ export interface Question {
   number: string;
   text: string;
   order: number;
-  page:number
+  page:number;
+  maxMarks:number;
 }
 
 export interface AnswerRegion {

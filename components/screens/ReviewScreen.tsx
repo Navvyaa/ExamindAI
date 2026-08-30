@@ -6,7 +6,7 @@ import { useAssessmentStore } from "@/store/assessmentStore";
 import AnswerViewer from "../review/AnswerViewer";
 
 export default function ReviewScreen() {
-  const { questions, answers } = useAssessmentStore();
+  const { questions, answers,results } = useAssessmentStore();
   const [activeTab, setActiveTab] = useState<"questions" | "answers">("questions");
 
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(
@@ -20,6 +20,9 @@ export default function ReviewScreen() {
     (answer) =>
       answer.questionNumber === selectedQuestion?.number
   );
+
+  
+    console.log(results)
 
   return (
     <div className="h-full min-h-0 flex flex-col">
